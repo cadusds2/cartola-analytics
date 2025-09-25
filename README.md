@@ -76,5 +76,12 @@ A estrutura acima ainda esta em construcao. Utilize-a como referencia ao criar n
 - Prefect: https://docs.prefect.io/ e Dagster: https://docs.dagster.io/
 - Guia de boas praticas em projetos de dados: https://cookiecutter-data-science.drivendata.org/
 
+## Setup com Poetry
+- Configure o ambiente executando `poetry install`.
+- Use `poetry shell` para ativar o ambiente virtual quando necessario.
+- Rode ferramentas via `poetry run`, por exemplo `poetry run pytest`.
 ---
 Sinta-se a vontade para adaptar a estrutura conforme novas necessidades surgirem. Atualize este README a cada marco relevante do projeto.
+
+
+
