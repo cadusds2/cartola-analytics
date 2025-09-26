@@ -1,0 +1,109 @@
+name: partidas
+version: 1
+raw_source:
+  endpoint: partidas
+  path_pattern: data/raw/partidas/{timestamp}.json
+stage:
+  output_path: data/stage/partidas/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/partidas/partidas.parquet
+  primary_key:
+    - partida_id
+  unique_constraints:
+    - [partida_id]
+  description: Lista de partidas da rodada corrente com metadados de transmissao e desempenho recente.
+fields:
+  - name: rodada
+    type: int
+    required: true
+    description: Numero da rodada referente ao conjunto de partidas.
+  - name: partida_id
+    type: int
+    required: true
+    description: Identificador unico da partida.
+  - name: campeonato_id
+    type: int
+    required: true
+    description: Identificador do campeonato na API Cartola.
+  - name: partida_data
+    type: timestamp
+    required: true
+    description: Data e hora programada para o inicio da partida (UTC).
+  - name: timestamp_partida
+    type: timestamp
+    required: false
+    description: Timestamp UNIX convertido para datetime UTC.
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+  - name: clube_casa_id
+    type: int
+    required: true
+    description: Identificador do clube mandante.
+  - name: clube_casa_posicao
+    type: int
+    required: false
+    description: Posicao do clube mandante na tabela.
+  - name: clube_visitante_id
+    type: int
+    required: true
+    description: Identificador do clube visitante.
+  - name: clube_visitante_posicao
+    type: int
+    required: false
+    description: Posicao do clube visitante na tabela.
+  - name: placar_oficial_mandante
+    type: int
+    required: false
+    description: Placar oficial do mandante quando disponivel.
+  - name: placar_oficial_visitante
+    type: int
+    required: false
+    description: Placar oficial do visitante quando disponivel.
+  - name: aproveitamento_mandante
+    type: string
+    required: false
+    description: Sequencia de resultados recentes do mandante.
+  - name: aproveitamento_visitante
+    type: string
+    required: false
+    description: Sequencia de resultados recentes do visitante.
+  - name: valida
+    type: bool
+    required: true
+    description: Indica se a partida e valida para pontuacao.
+  - name: local
+    type: string
+    required: false
+    description: Descricao do estadio ou local da partida.
+  - name: transmissao_label
+    type: string
+    required: false
+    description: Label informativo da transmissao.
+  - name: transmissao_url
+    type: string
+    required: false
+    description: URL da transmissao/divulgacao associada.
+  - name: status_transmissao_tr
+    type: string
+    required: false
+    description: Status textual da transmissao tempo real.
+  - name: status_cronometro_tr
+    type: string
+    required: false
+    description: Status do cronometro em tempo real.
+  - name: periodo_tr
+    type: string
+    required: false
+    description: "Periodo exibido no tempo real (ex.: 1T, 2T)."
+  - name: inicio_cronometro_tr
+    type: string
+    required: false
+    description: "Horario exibido para inicio de cronometro no tempo real."
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_partidas -> transform_partidas
+  owner: dados-cartola
+  updated_at: 2025-09-26T12:30:00Z
