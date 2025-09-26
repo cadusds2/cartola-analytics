@@ -21,6 +21,8 @@ from . import (
     transform_clubes,
     transform_mercado_status,
     transform_partidas,
+    transform_atletas_mercado,
+    transform_atletas_pontuados,
     transform_rodadas,
 )
 
@@ -31,8 +33,12 @@ _AUTO_TRANSFORMERS: dict[str, Callable[..., dict[str, Any]]] = {
     "rodadas": transform_rodadas,
     "mercado_status": transform_mercado_status,
     "partidas": transform_partidas,
+    "atletas_mercado": transform_atletas_mercado,
+    "atletas_pontuados": transform_atletas_pontuados,
     "clubes": transform_clubes,
 }
+
+
 
 
 def _build_parser() -> argparse.ArgumentParser:

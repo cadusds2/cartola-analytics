@@ -1,0 +1,117 @@
+name: atletas_pontuados
+version: 1
+raw_source:
+  endpoint: atletas_pontuados
+  path_pattern: data/raw/atletas_pontuados/{timestamp}.json
+stage:
+  output_path: data/stage/atletas_pontuados/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/atletas/atletas_pontuados.parquet
+  primary_key:
+    - atleta_id
+  unique_constraints:
+    - [rodada, atleta_id]
+  description: Pontuacao consolidada por atleta para a rodada atual.
+fields:
+  - name: rodada
+    type: int
+    required: true
+    description: Numero da rodada em que a pontuacao foi gerada.
+  - name: atleta_id
+    type: int
+    required: true
+    description: Identificador unico do atleta.
+  - name: clube_id
+    type: int
+    required: false
+    description: Clube do atleta na rodada.
+  - name: posicao_id
+    type: int
+    required: false
+    description: Posicao do atleta na rodada.
+  - name: pontuacao
+    type: float
+    required: true
+    description: Pontuacao final do atleta na rodada.
+  - name: entrou_em_campo
+    type: bool
+    required: false
+    description: Indica se o atleta atuou na rodada.
+  - name: apelido
+    type: string
+    required: false
+    description: Apelido ou nome curto do atleta.
+  - name: slug
+    type: string
+    required: false
+    description: Slug textual do atleta.
+  - name: scout_ca
+    type: int
+    required: false
+    description: Cartoes amarelos (scout).
+  - name: scout_cv
+    type: int
+    required: false
+    description: Cartoes vermelhos (scout).
+  - name: scout_fs
+    type: int
+    required: false
+    description: Faltas sofridas (scout).
+  - name: scout_fc
+    type: int
+    required: false
+    description: Faltas cometidas (scout).
+  - name: scout_ds
+    type: int
+    required: false
+    description: Desarmes (scout).
+  - name: scout_g
+    type: int
+    required: false
+    description: Gols marcados (scout).
+  - name: scout_a
+    type: int
+    required: false
+    description: Assistencias (scout).
+  - name: scout_fd
+    type: int
+    required: false
+    description: Finalizacoes defendidas (scout).
+  - name: scout_ff
+    type: int
+    required: false
+    description: Finalizacoes para fora (scout).
+  - name: scout_ft
+    type: int
+    required: false
+    description: Finalizacoes no alvo (scout).
+  - name: scout_pp
+    type: int
+    required: false
+    description: Penaltis perdidos (scout).
+  - name: scout_dp
+    type: int
+    required: false
+    description: Defesas de penalti (scout).
+  - name: scout_sg
+    type: int
+    required: false
+    description: Jogos sem sofrer gols (scout).
+  - name: scout_gc
+    type: int
+    required: false
+    description: Gols contra (scout).
+  - name: scout_i
+    type: int
+    required: false
+    description: Impedimentos (scout).
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_atletas_pontuados -> transform_atletas_pontuados
+  owner: dados-cartola
+  updated_at: 2025-09-26T14:45:00Z

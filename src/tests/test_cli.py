@@ -34,6 +34,7 @@ def fake_endpoints(monkeypatch):
         Endpoint(name="mercado_status", url="https://example.com/mercado_status"),
         Endpoint(name="partidas", url="https://example.com/partidas"),
         Endpoint(name="atletas_mercado", url="https://example.com/atletas_mercado"),
+        Endpoint(name="atletas_pontuados", url="https://example.com/atletas_pontuados"),
         Endpoint(name="rodadas", url="https://example.com/rodadas"),
         Endpoint(
             name="partidas_por_rodada",
@@ -89,6 +90,8 @@ def auto_transform_spy(monkeypatch):
             "rodadas": make_transform("rodadas"),
             "mercado_status": make_transform("mercado_status"),
             "partidas": make_transform("partidas"),
+            "atletas_mercado": make_transform("atletas_mercado"),
+            "atletas_pontuados": make_transform("atletas_pontuados"),
             "clubes": make_transform("clubes"),
         },
     )
@@ -105,6 +108,7 @@ def test_cli_list(capsys, fake_endpoints):
     assert "mercado_status" in out
     assert "partidas" in out
     assert "atletas_mercado" in out
+    assert "atletas_pontuados" in out
 
 
 def test_cli_collect_specific(monkeypatch, fake_settings, fake_endpoints, tmp_path):
@@ -160,9 +164,12 @@ def test_cli_collect_all_discovers_rounds(monkeypatch, fake_settings, fake_endpo
     assert ("rodadas", None) in collected
     assert ("mercado_status", None) in collected
     assert ("partidas", None) in collected
+    assert ("atletas_mercado", None) in collected
+    assert ("atletas_pontuados", None) in collected
     assert ("partidas_por_rodada", 1) in collected
     assert ("partidas_por_rodada", 2) in collected
-    assert len(collected) == 7
+    assert len(collected) == 8
+    assert len(collected) == 8
 
 
 def test_cli_collect_handles_failure(
@@ -290,6 +297,21 @@ def test_cli_transform_uses_custom_output(
     assert exit_code == 0
     assert len(auto_transform_spy.get("rodadas", [])) == 1
     assert auto_transform_spy["rodadas"][0]["raw_root"].resolve() == out_dir.resolve()
+
+def test_cli_runs_transform_for_atletas_pontuados(
+    monkeypatch, fake_settings, auto_transform_spy,
+):
+    endpoints = [Endpoint(name="atletas_pontuados", url="https://example.com/atletas_pontuados")]
+    monkeypatch.setattr(cli, "list_endpoints", lambda: endpoints)
+
+    def fake_collect(endpoint, **kwargs):
+        return fake_settings.raw_dir / "atletas_pontuados" / "payload.json"
+
+    monkeypatch.setattr(cli, "collect_endpoint_payload", fake_collect)
+
+    exit_code = cli.main(["atletas_pontuados"])
+    assert exit_code == 0
+    assert len(auto_transform_spy.get("atletas_pontuados", [])) == 1
 
 
 
