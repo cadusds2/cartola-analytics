@@ -1,0 +1,62 @@
+﻿name: mercado_status
+version: 1
+raw_source:
+  endpoint: mercado_status
+  path_pattern: data/raw/mercado_status/{timestamp}.json
+stage:
+  output_path: data/stage/mercado_status/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/mercado/mercado_status.parquet
+  primary_key:
+    - temporada
+  unique_constraints:
+    - [temporada]
+  description: Status geral do mercado Cartola FC por temporada.
+fields:
+  - name: temporada
+    type: int
+    required: true
+    description: Identificador da temporada (ano base).
+  - name: rodada_atual
+    type: int
+    required: true
+    description: Numero da rodada corrente.
+  - name: rodada_final
+    type: int
+    required: true
+    description: Numero da rodada final da temporada.
+  - name: status_mercado
+    type: string
+    required: true
+    description: Status textual (ABERTO, FECHADO, etc.).
+    enum:
+      - ABERTO
+      - FECHADO
+      - EM_MANUTENCAO
+  - name: mercado_pos_rodada
+    type: bool
+    required: true
+    description: Indica se o mercado esta em periodo pos-rodada.
+  - name: bola_rolando
+    type: bool
+    required: true
+    description: Indica se ha partidas em andamento.
+  - name: timestamp_fechamento
+    type: timestamp
+    required: true
+    description: Timestamp UTC do fechamento do mercado atual.
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships:
+  - field: rodada_atual
+    references:
+      dataset: data/processed/rodadas/rodadas.parquet
+      key: rodada_id
+      type: foreign_key
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_mercado_status -> transform_mercado_status
+  owner: dados-cartola
+  updated_at: 2025-09-25T03:54:00Z

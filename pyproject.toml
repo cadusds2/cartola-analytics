@@ -9,6 +9,11 @@ license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
+    "httpx (>=0.28.1,<0.29.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "pandas (>=2.3.2,<3.0.0)",
+    "pyarrow (>=21.0.0,<22.0.0)",
+    "pyyaml (>=6.0.2,<7.0.0)"
 ]
 
 
@@ -21,6 +26,8 @@ ruff = "^0.13.1"
 black = "^25.9.0"
 mypy = "^1.18.2"
 pytest = "^8.4.2"
+respx = "^0.22.0"
+types-pyyaml = "^6.0.12.20250915"
 
 [tool.black]
 line-length = 88
@@ -59,3 +66,6 @@ testpaths = ["src/tests"]
 known-first-party = ["cartola_analytics"]
 
 
+
+[tool.poetry.scripts]
+cartola-fetch = "cartola_analytics.cli:main"

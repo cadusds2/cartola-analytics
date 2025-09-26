@@ -80,8 +80,22 @@ A estrutura acima ainda esta em construcao. Utilize-a como referencia ao criar n
 - Configure o ambiente executando `poetry install`.
 - Use `poetry shell` para ativar o ambiente virtual quando necessario.
 - Rode ferramentas via `poetry run`, por exemplo `poetry run pytest`.
+
+## CLI de Coleta
+- Guia completo: veja `docs/cli-guide.md` para exemplos detalhados, variaveis e log.
+- `--all` sem `--rodada` percorre automaticamente todas as rodadas disponiveis.
+- Falhas individuais (ex.: 404) sao logadas e exibidas ao final; o comando retorna status 1 se houver erros.
+- Use `cartola-fetch --list` para visualizar os endpoints disponiveis.
+- Execute `cartola-fetch clubes` para baixar apenas o endpoint informado (salva em `data/raw/`).
+- Utilize `--all` para coletar tudo; combine com `--rodada 5` quando necessario.
+- Opcoes uteis: `--output` para definir diretorio customizado e `--use-cache` para reaproveitar respostas locais.
+
+## Configuracao via .env
+- Copie `.env.example` para `.env` e ajuste conforme necessario.
+- Principais variaveis: `CARTOLA_TIMEOUT`, `CARTOLA_MAX_RETRIES`, `CARTOLA_BACKOFF_FACTOR`, `CARTOLA_CACHE_TTL`, `CARTOLA_CACHE_DIR`, `CARTOLA_RAW_DIR`, `CARTOLA_USER_AGENT`, `CARTOLA_ACCEPT`, `CARTOLA_LOG_LEVEL`.
+- Chame `cartola_analytics.configure_logging_from_settings` no bootstrap para aplicar o nivel de log.
+- Clientes HTTP criados via `CartolaClient.from_env()` usam automaticamente esses valores.
+- Logs sao emitidos em JSON no stdout e, se `CARTOLA_LOG_FILE` estiver definido, tambem sao gravados em arquivo.
+
 ---
 Sinta-se a vontade para adaptar a estrutura conforme novas necessidades surgirem. Atualize este README a cada marco relevante do projeto.
-
-
-
