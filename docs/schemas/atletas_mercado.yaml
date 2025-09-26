@@ -1,0 +1,169 @@
+name: atletas_mercado
+version: 1
+raw_source:
+  endpoint: atletas_mercado
+  path_pattern: data/raw/atletas_mercado/{timestamp}.json
+stage:
+  output_path: data/stage/atletas_mercado/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/atletas/atletas_mercado.parquet
+  primary_key:
+    - atleta_id
+  unique_constraints:
+    - [atleta_id]
+  description: Informacoes de atletas em mercado, com scouts e precos vigentes.
+fields:
+  - name: atleta_id
+    type: int
+    required: true
+    description: Identificador unico do atleta.
+  - name: rodada_id
+    type: int
+    required: false
+    description: Rodada de referencia do status do atleta.
+  - name: clube_id
+    type: int
+    required: true
+    description: Identificador do clube atual.
+  - name: posicao_id
+    type: int
+    required: true
+    description: Identificador da posicao do atleta.
+  - name: status_id
+    type: int
+    required: true
+    description: Identificador do status atual (provavel, duvida, etc.).
+  - name: status_nome
+    type: string
+    required: false
+    description: Descricao do status do atleta.
+  - name: clube_nome
+    type: string
+    required: false
+    description: Nome fantasia do clube associado.
+  - name: posicao_nome
+    type: string
+    required: false
+    description: Nome textual da posicao.
+  - name: nome
+    type: string
+    required: true
+    description: Nome completo do atleta.
+  - name: apelido
+    type: string
+    required: true
+    description: Apelido utilizado no Cartola.
+  - name: apelido_abreviado
+    type: string
+    required: false
+    description: Apelido abreviado exibido na interface.
+  - name: slug
+    type: string
+    required: false
+    description: Slug textual do atleta.
+  - name: foto
+    type: string
+    required: false
+    description: URL da foto/figurinha do atleta.
+  - name: preco_num
+    type: float
+    required: true
+    description: Preco atual do atleta em cartoletas.
+  - name: media_num
+    type: float
+    required: true
+    description: Media de pontos do atleta na temporada.
+  - name: variacao_num
+    type: float
+    required: true
+    description: Variacao de preco em relacao a rodada anterior.
+  - name: pontos_num
+    type: float
+    required: false
+    description: Pontuacao na rodada anterior.
+  - name: jogos_num
+    type: int
+    required: true
+    description: Numero de jogos disputados na temporada.
+  - name: entrou_em_campo
+    type: bool
+    required: false
+    description: Indica se o atleta atuou na rodada anterior.
+  - name: scout_ca
+    type: int
+    required: false
+    description: Cartoes amarelos acumulados na rodada anterior (scout).
+  - name: scout_cv
+    type: int
+    required: false
+    description: Cartoes vermelhos acumulados na rodada anterior (scout).
+  - name: scout_fs
+    type: int
+    required: false
+    description: Faltas sofridas acumuladas na rodada anterior (scout).
+  - name: scout_gc
+    type: int
+    required: false
+    description: Gols contra (scout).
+  - name: scout_g
+    type: int
+    required: false
+    description: Gols marcados (scout).
+  - name: scout_a
+    type: int
+    required: false
+    description: Assistencias (scout).
+  - name: scout_fd
+    type: int
+    required: false
+    description: Finalizacoes na trave/defendidas (scout).
+  - name: scout_ff
+    type: int
+    required: false
+    description: Finalizacoes para fora (scout).
+  - name: scout_ft
+    type: int
+    required: false
+    description: Finalizacoes no alvo (scout).
+  - name: scout_sg
+    type: int
+    required: false
+    description: Jogos sem sofrer gols (scout).
+  - name: scout_pp
+    type: int
+    required: false
+    description: Penaltis perdidos (scout).
+  - name: scout_dp
+    type: int
+    required: false
+    description: Defesas de penalti (scout).
+  - name: scout_d
+    type: int
+    required: false
+    description: Defesas (goleiros).
+  - name: scout_ds
+    type: int
+    required: false
+    description: Desarmes realizados.
+  - name: scout_fc
+    type: int
+    required: false
+    description: Faltas cometidas.
+  - name: scout_i
+    type: int
+    required: false
+    description: Impedimentos.
+  - name: scout_pi
+    type: int
+    required: false
+    description: Penaltis inválidos/induzidos (quando presente).
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_atletas_mercado -> transform_atletas_mercado
+  owner: dados-cartola
+  updated_at: 2025-09-26T14:00:00Z

@@ -33,6 +33,7 @@ def fake_endpoints(monkeypatch):
         Endpoint(name="clubes", url="https://example.com/clubes"),
         Endpoint(name="mercado_status", url="https://example.com/mercado_status"),
         Endpoint(name="partidas", url="https://example.com/partidas"),
+        Endpoint(name="atletas_mercado", url="https://example.com/atletas_mercado"),
         Endpoint(name="rodadas", url="https://example.com/rodadas"),
         Endpoint(
             name="partidas_por_rodada",
@@ -103,6 +104,7 @@ def test_cli_list(capsys, fake_endpoints):
     assert "rodadas" in out
     assert "mercado_status" in out
     assert "partidas" in out
+    assert "atletas_mercado" in out
 
 
 def test_cli_collect_specific(monkeypatch, fake_settings, fake_endpoints, tmp_path):
@@ -160,7 +162,7 @@ def test_cli_collect_all_discovers_rounds(monkeypatch, fake_settings, fake_endpo
     assert ("partidas", None) in collected
     assert ("partidas_por_rodada", 1) in collected
     assert ("partidas_por_rodada", 2) in collected
-    assert len(collected) == 6
+    assert len(collected) == 7
 
 
 def test_cli_collect_handles_failure(
@@ -288,3 +290,9 @@ def test_cli_transform_uses_custom_output(
     assert exit_code == 0
     assert len(auto_transform_spy.get("rodadas", [])) == 1
     assert auto_transform_spy["rodadas"][0]["raw_root"].resolve() == out_dir.resolve()
+
+
+
+
+
+

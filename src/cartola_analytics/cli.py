@@ -1,4 +1,4 @@
-﻿"""Command line interface for Cartola Analytics data collection."""
+"""Command line interface for Cartola Analytics data collection."""
 
 from __future__ import annotations
 
@@ -317,3 +317,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
+
