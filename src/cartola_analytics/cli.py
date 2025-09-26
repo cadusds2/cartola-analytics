@@ -23,6 +23,7 @@ from . import (
     transform_partidas,
     transform_atletas_mercado,
     transform_atletas_pontuados,
+    transform_pos_rodada_destaques,
     transform_rodadas,
 )
 
@@ -35,6 +36,7 @@ _AUTO_TRANSFORMERS: dict[str, Callable[..., dict[str, Any]]] = {
     "partidas": transform_partidas,
     "atletas_mercado": transform_atletas_mercado,
     "atletas_pontuados": transform_atletas_pontuados,
+    "pos_rodada_destaques": transform_pos_rodada_destaques,
     "clubes": transform_clubes,
 }
 

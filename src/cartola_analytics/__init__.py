@@ -12,6 +12,7 @@ from .pipelines import (
     transform_partidas,
     transform_atletas_mercado,
     transform_atletas_pontuados,
+    transform_pos_rodada_destaques,
     transform_rodadas,
 )
 from .schema import FieldSpec, SchemaSpec, load_schema, schema_dir
@@ -33,6 +34,7 @@ __all__ = [
     "transform_partidas",
     "transform_atletas_mercado",
     "transform_atletas_pontuados",
+    "transform_pos_rodada_destaques",
     "transform_rodadas",
     "FieldSpec",
     "SchemaSpec",

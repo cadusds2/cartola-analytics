@@ -1,0 +1,81 @@
+name: pos_rodada_destaques
+version: 1
+raw_source:
+  endpoint: pos_rodada_destaques
+  path_pattern: data/raw/pos_rodada_destaques/{timestamp}.json
+stage:
+  output_path: data/stage/pos_rodada_destaques/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/rodadas/pos_rodada_destaques.parquet
+  primary_key:
+    - rodada
+  unique_constraints:
+    - [rodada]
+  description: Destaque da rodada (mito) e estatisticas agregadas de media de pontos/cartoletas.
+fields:
+  - name: rodada
+    type: int
+    required: true
+    description: Numero da rodada referente ao mito.
+  - name: time_id
+    type: int
+    required: true
+    description: Identificador do time vencedor da rodada.
+  - name: nome_time
+    type: string
+    required: true
+    description: Nome do time (cartola).
+  - name: nome_cartola
+    type: string
+    required: true
+    description: Nome do cartola (manager).
+  - name: slug
+    type: string
+    required: false
+    description: Slug textual do time/cartola.
+  - name: clube_id
+    type: int
+    required: false
+    description: Clube associado ao mito.
+  - name: media_pontos
+    type: float
+    required: true
+    description: Media de pontos da rodada.
+  - name: media_cartoletas
+    type: float
+    required: true
+    description: Media de cartoletas utilizadas na rodada.
+  - name: tipo_escudo
+    type: int
+    required: false
+    description: Tipo de escudo configurado pelo time.
+  - name: tipo_camisa
+    type: int
+    required: false
+    description: Tipo de camisa configurado pelo time.
+  - name: esquema_id
+    type: int
+    required: false
+    description: Esquema tatico utilizado.
+  - name: url_escudo_svg
+    type: string
+    required: false
+    description: URL SVG do escudo do time.
+  - name: url_camisa_svg
+    type: string
+    required: false
+    description: URL SVG da camisa do time.
+  - name: assinante
+    type: bool
+    required: false
+    description: Indica se o cartola é assinante.
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_pos_rodada_destaques -> transform_pos_rodada_destaques
+  owner: dados-cartola
+  updated_at: 2025-09-26T15:30:00Z

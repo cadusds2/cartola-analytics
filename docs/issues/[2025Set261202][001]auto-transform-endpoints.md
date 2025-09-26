@@ -13,4 +13,4 @@ Garantir que camadas `stage` e `processed` sejam atualizadas sem etapas manuais,
 - [x] clubes - definir pipeline de transformacao e integrar a CLI
 - [x] atletas_mercado - definir pipeline de transformacao e integrar a CLI
 - [x] atletas_pontuados - definir pipeline de transformacao e integrar a CLI
-- [ ] pos_rodada_destaques - definir pipeline de transformacao e integrar a CLI
+- [x] pos_rodada_destaques - definir pipeline de transformacao e integrar a CLI
