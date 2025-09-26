@@ -1,0 +1,65 @@
+name: clubes
+version: 1
+raw_source:
+  endpoint: clubes
+  path_pattern: data/raw/clubes/{timestamp}.json
+stage:
+  output_path: data/stage/clubes/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/clubes/clubes.parquet
+  primary_key:
+    - clube_id
+  unique_constraints:
+    - [clube_id]
+  description: Cadastro de clubes com metadados e URLs de escudo.
+fields:
+  - name: clube_id
+    type: int
+    required: true
+    description: Identificador unico do clube.
+  - name: nome
+    type: string
+    required: true
+    description: Nome abreviado do clube conforme Cartola.
+  - name: nome_fantasia
+    type: string
+    required: false
+    description: Nome completo/fantasia do clube.
+  - name: apelido
+    type: string
+    required: false
+    description: Apelido popular do clube.
+  - name: abreviacao
+    type: string
+    required: false
+    description: Sigla de tres letras utilizada pelo Cartola.
+  - name: slug
+    type: string
+    required: false
+    description: Slug textual utilizado em URLs internas.
+  - name: escudo_30x30
+    type: string
+    required: false
+    description: URL do escudo (30x30).
+  - name: escudo_45x45
+    type: string
+    required: false
+    description: URL do escudo (45x45).
+  - name: escudo_60x60
+    type: string
+    required: false
+    description: URL do escudo (60x60).
+  - name: url_editoria
+    type: string
+    required: false
+    description: URL oficial do clube no ge.globo.com.
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_clubes -> transform_clubes
+  owner: dados-cartola
+  updated_at: 2025-09-26T13:20:00Z

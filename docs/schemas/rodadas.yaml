@@ -1,0 +1,41 @@
+﻿name: rodadas
+version: 1
+raw_source:
+  endpoint: rodadas
+  path_pattern: data/raw/rodadas/{timestamp}.json
+stage:
+  output_path: data/stage/rodadas/{run_timestamp}.parquet
+processed:
+  dataset: data/processed/rodadas/rodadas.parquet
+  primary_key:
+    - rodada_id
+  unique_constraints:
+    - [rodada_id]
+  description: Janela de inicio e fim de cada rodada da temporada.
+fields:
+  - name: rodada_id
+    type: int
+    required: true
+    description: Identificador sequencial da rodada.
+  - name: nome_rodada
+    type: string
+    required: true
+    description: Nome descritivo da rodada.
+  - name: inicio
+    type: timestamp
+    required: true
+    description: Data/hora de abertura da rodada.
+  - name: fim
+    type: timestamp
+    required: true
+    description: Data/hora de fechamento da rodada.
+  - name: timestamp_coleta
+    type: timestamp
+    required: true
+    description: Momento UTC da coleta do payload.
+relationships: []
+metadata:
+  lineage:
+    - cartola-fetch -> collect_endpoint_payload -> stage_rodadas -> transform_rodadas
+  owner: dados-cartola
+  updated_at: 2025-09-25T05:30:00Z
