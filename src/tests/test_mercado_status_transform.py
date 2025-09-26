@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -66,3 +66,27 @@ def test_transform_mercado_status(tmp_path: Path) -> None:
     assert processed_df.loc[0, "status_mercado"] in {"ABERTO", "FECHADO"}
     assert str(processed_df["timestamp_coleta"].dt.tz) in {"UTC", "tzutc()"}
     assert processed_df.iloc[-1]["status_mercado"] == "FECHADO"
+
+
+def test_transform_mercado_status_custom_raw_root(tmp_path: Path) -> None:
+    _write_schema_copy(tmp_path)
+    schema = load_schema("mercado_status", base_dir=tmp_path)
+
+    raw_root = tmp_path / "alt_raw"
+    payload = {
+        "temporada": 2025,
+        "rodada_atual": 25,
+        "rodada_final": 38,
+        "status_mercado": 1,
+        "mercado_pos_rodada": False,
+        "bola_rolando": False,
+        "fechamento": {"timestamp": 1758999540},
+    }
+    raw_dir = raw_root / "mercado_status"
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    raw_dir.joinpath("20250925T020000Z.json").write_text(json.dumps(payload), encoding="utf-8")
+
+    result = transform_mercado_status(base_dir=tmp_path, schema=schema, raw_root=raw_root)
+
+    processed_df = pd.read_parquet(result["processed_path"])
+    assert processed_df.loc[0, "status_mercado"] == "ABERTO"

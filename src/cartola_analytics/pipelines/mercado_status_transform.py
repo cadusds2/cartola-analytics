@@ -1,4 +1,4 @@
-﻿"""Transformation pipeline for mercado_status endpoint."""
+"""Transformation pipeline for mercado_status endpoint."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from ..schema import SchemaSpec, load_schema
+
 
 _STATUS_MAP = {
     1: "ABERTO",
@@ -71,15 +72,14 @@ def transform_mercado_status(
     *,
     base_dir: Path | None = None,
     schema: SchemaSpec | None = None,
+    raw_root: Path | None = None,
 ) -> dict[str, Any]:
     """Transform raw mercado_status payloads into stage and processed datasets."""
     project_root = base_dir or _project_root()
     spec = schema or load_schema("mercado_status", base_dir=project_root)
 
-    raw_dir = project_root / "data" / "raw" / spec.raw_source.get(
-        "endpoint",
-        "mercado_status",
-    )
+    raw_base = Path(raw_root) if raw_root is not None else project_root / "data" / "raw"
+    raw_dir = raw_base / spec.raw_source.get("endpoint", "mercado_status")
     if not raw_dir.exists():
         raise FileNotFoundError(f"Raw directory not found: {raw_dir}")
 

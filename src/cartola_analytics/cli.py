@@ -7,7 +7,7 @@ import logging
 import sys
 from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import httpx
 
@@ -18,9 +18,21 @@ from . import (
     configure_logging_from_settings,
     list_endpoints,
     load_settings,
+    transform_clubes,
+    transform_mercado_status,
+    transform_partidas,
+    transform_rodadas,
 )
 
 _logger = logging.getLogger(__name__)
+
+
+_AUTO_TRANSFORMERS: dict[str, Callable[..., dict[str, Any]]] = {
+    "rodadas": transform_rodadas,
+    "mercado_status": transform_mercado_status,
+    "partidas": transform_partidas,
+    "clubes": transform_clubes,
+}
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -177,6 +189,7 @@ def main(argv: list[str] | None = None) -> int:
 
     rounds_to_use: list[int] = []
     failures: list[tuple[str, int | None, str]] = []
+    successful_endpoints: set[str] = set()
 
     with CartolaClient(settings=settings) as client:
         if args.rodada is not None:
@@ -211,6 +224,7 @@ def main(argv: list[str] | None = None) -> int:
                             base_dir=base_dir,
                             use_cache=args.use_cache,
                         )
+                        successful_endpoints.add(endpoint.name)
                     except (httpx.HTTPError, ValueError) as err:
                         _logger.error(
                             "cli_collect_failed",
@@ -241,6 +255,7 @@ def main(argv: list[str] | None = None) -> int:
                         base_dir=base_dir,
                         use_cache=args.use_cache,
                     )
+                    successful_endpoints.add(endpoint.name)
                 except (httpx.HTTPError, ValueError) as err:
                     _logger.error(
                         "cli_collect_failed",
@@ -252,6 +267,41 @@ def main(argv: list[str] | None = None) -> int:
                         },
                     )
                     failures.append((endpoint.name, args.rodada, str(err)))
+
+    if successful_endpoints:
+        try:
+            raw_root = base_dir.resolve()
+        except OSError:
+            raw_root = base_dir
+
+        for endpoint_name, transformer in _AUTO_TRANSFORMERS.items():
+            if endpoint_name not in successful_endpoints:
+                continue
+            event_base = f'cli_transform_{endpoint_name}'
+            try:
+                result = transformer(raw_root=raw_root)
+                _logger.info(
+                    event_base,
+                    extra={
+                        'event': event_base,
+                        'raw_root': str(raw_root),
+                        'stage_path': str(result.get('stage_path', '')),
+                        'processed_path': str(result.get('processed_path', '')),
+                        'rows_stage': result.get('rows_stage'),
+                        'rows_processed': result.get('rows_processed'),
+                    },
+                )
+            except Exception as err:  # pragma: no cover - defensive
+                failure_event = f'{event_base}_failed'
+                _logger.error(
+                    failure_event,
+                    extra={
+                        'event': failure_event,
+                        'raw_root': str(raw_root),
+                        'error': str(err),
+                    },
+                )
+                failures.append((f'transform_{endpoint_name}', None, str(err)))
 
     if failures:
         for name, rodada_value, message in failures:
@@ -267,4 +317,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
-
