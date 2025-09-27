@@ -58,6 +58,12 @@ poetry run cartola-fetch --all --rodada 5
 - Logs sao sempre emitidos em JSON (stdout).
 - Quando `CARTOLA_LOG_FILE` esta definido, um arquivo e criado com o mesmo formato JSON.
 - Campos relevantes: `event`, `endpoint`, `rodada`, `path`, `error`.
+- Validacoes concluem com eventos `cli_validation_<dataset>` indicando `rows` e `processed_path`. Erros geram `cli_validation_<dataset>_failed` com detalhes do campo quebrado.
+
+## Validacao automatica e Data Dictionary
+- Apos cada coleta bem sucedida, a CLI executa a transformacao correspondente e valida o Parquet processado contra o schema YAML. Qualquer quebra encerra o comando com status 1.
+- Regere o dicionario de dados sempre que ajustar schemas via `poetry run python -m cartola_analytics.data_dictionary` (sobrescreve `docs/data-dictionary/README.md`).
+- Inspecione os logs de validacao para entender a causa das falhas (`error`, `dataset`, `rows`) antes de atualizar pipelines ou contratos.
 
 ## Fluxo interno
 1. `cartola-fetch` carrega `CartolaSettings` (variaveis de ambiente).

@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from ..schema import SchemaSpec, load_schema
+from ..validation import validate_with_logging
 
 _DATE_FORMATS = [
     "%Y-%m-%d %H:%M:%S",
@@ -162,6 +163,7 @@ def transform_partidas(
         .sort_values("partida_id")
         .reset_index(drop=True)
     )
+    validate_with_logging(processed, spec)
     processed.to_parquet(processed_path, index=False)
 
     return {

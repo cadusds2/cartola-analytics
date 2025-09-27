@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from ..schema import SchemaSpec, load_schema
+from ..validation import validate_with_logging
 
 _SCOUT_FIELDS = {
     "CA": "scout_ca",
@@ -175,6 +176,7 @@ def transform_atletas_mercado(
         .sort_values("atleta_id")
         .reset_index(drop=True)
     )
+    validate_with_logging(processed, spec)
     processed.to_parquet(processed_path, index=False)
 
     return {

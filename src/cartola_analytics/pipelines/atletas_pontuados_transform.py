@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from ..schema import SchemaSpec, load_schema
+from ..validation import validate_with_logging
 
 _SCOUT_FIELDS = {
     "CA": "scout_ca",
@@ -147,11 +148,12 @@ def transform_atletas_pontuados(
     )
     processed_path.parent.mkdir(parents=True, exist_ok=True)
     processed = (
-        frame.sort_values("timestamp_coleta")
-        .drop_duplicates(subset=["atleta_id"], keep="last")
+        frame.sort_values(["rodada", "timestamp_coleta"])
+        .drop_duplicates(subset=["rodada", "atleta_id"], keep="last")
         .sort_values(["rodada", "atleta_id"])
         .reset_index(drop=True)
     )
+    validate_with_logging(processed, spec)
     processed.to_parquet(processed_path, index=False)
 
     return {

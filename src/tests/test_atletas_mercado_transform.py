@@ -1,10 +1,13 @@
 import json
+import logging
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 from cartola_analytics.pipelines import transform_atletas_mercado
 from cartola_analytics.schema import load_schema
+from cartola_analytics.validation import validate_dataframe_against_schema
 
 
 def _write_schema_copy(base_dir: Path) -> None:
@@ -24,8 +27,9 @@ def _write_raw_payload(base_dir: Path, name: str, payload: dict[str, object]) ->
     raw_dir.joinpath(name).write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_transform_atletas_mercado(tmp_path: Path) -> None:
+def test_transform_atletas_mercado(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     _write_schema_copy(tmp_path)
+    caplog.set_level(logging.INFO, logger="cartola_analytics.validation")
 
     base_payload = {
         "clubes": {
@@ -95,6 +99,8 @@ def test_transform_atletas_mercado(tmp_path: Path) -> None:
     stage_df = pd.read_parquet(result["stage_path"])
     processed_df = pd.read_parquet(result["processed_path"])
 
+    validate_dataframe_against_schema(processed_df, schema)
+
     assert len(stage_df) == 4
     assert set(stage_df.columns) >= {
         "atleta_id",
@@ -112,3 +118,6 @@ def test_transform_atletas_mercado(tmp_path: Path) -> None:
     assert processed_df.loc[processed_df["atleta_id"] == 10, "preco_num"].iloc[0] == 5.5
     assert processed_df.loc[processed_df["atleta_id"] == 20, "clube_nome"].iloc[0] == "ABC FC"
     assert processed_df.loc[processed_df["atleta_id"] == 10, "scout_ca"].iloc[0] == 2
+    assert any(
+        record.message == "cli_validation_atletas_mercado" for record in caplog.records
+    )

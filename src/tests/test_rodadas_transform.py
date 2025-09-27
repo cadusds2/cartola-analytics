@@ -5,6 +5,7 @@ import pandas as pd
 
 from cartola_analytics.pipelines import transform_rodadas
 from cartola_analytics.schema import load_schema
+from cartola_analytics.validation import validate_dataframe_against_schema
 
 
 def _write_schema_copy(base_dir: Path) -> None:
@@ -58,6 +59,8 @@ def test_transform_rodadas(tmp_path: Path) -> None:
 
     stage_df = pd.read_parquet(result["stage_path"])
     processed_df = pd.read_parquet(result["processed_path"])
+
+    validate_dataframe_against_schema(processed_df, schema)
 
     assert len(stage_df) == 3
     assert set(stage_df.columns) == {
